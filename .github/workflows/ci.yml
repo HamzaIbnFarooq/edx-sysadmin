@@ -18,6 +18,16 @@ jobs:
       - name: Run black formatter
         run: black --check .
 
+      - name: Install system requirements
+        run: |
+          sudo apt-get install libxmlsec1-dev pkg-config nodejs
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org
+          sudo systemctl daemon-reload
+          sudo systemctl start mongod
+          sudo systemctl status mongod
+
       - name: Setup edX & Run Tests
         run: |
           cd ..
@@ -25,7 +35,25 @@ jobs:
           cd devstack
           sed -i 's/:cached//g' ./docker-compose-host.yml
           make dev.clone.https
+          cd ../edx-platform
+          git remote add mitodl https://github.com/mitodl/edx-platform.git
+          git fetch mitodl
+          git checkout mitodl/mitx/lilac
+          pip install -r requirements/edx/testing.txt
+          pip install -r requirements/edx/paver.txt
+          sudo npm install -g rtlcss
+          paver update_assets lms --settings=test_static_optimized
+          cp test_root/staticfiles/lms/webpack-stats.json test_root/staticfiles/webpack-stats.json
+          cd ../devstack
+          sudo rm /var/lib/mongodb/mongod.lock
+          sudo systemctl daemon-reload
+          sudo systemctl start mongod
           DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
+        env:
+          LMS_CFG: 'lms/envs/bok_choy.yml'
+          STUDIO_CFG: 'cms/envs/bok_choy.yml'
+          NODE_ENV: 'development'
+
 
       - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@v1
