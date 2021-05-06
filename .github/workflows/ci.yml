@@ -55,8 +55,10 @@ jobs:
 
       - name: Run tests
         run: |
+          cd ..
           pwd
           ls
+          cd edx-platform 
           ls test_root/
           ls test_root/staticfiles/
           ls test_root/staticfiles/lms
