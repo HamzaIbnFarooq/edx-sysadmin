@@ -7,6 +7,11 @@ cd /edx/app/edxapp/edx-platform
 mkdir -p reports
 
 pip install -r ./requirements/edx/testing.txt
+pip install -r requirements/edx/testing.txt
+pip install -r requirements/edx/paver.txt
+sudo npm install -g rtlcss
+paver update_assets lms --settings=test_static_optimized
+cp test_root/staticfiles/lms/webpack-stats.json test_root/staticfiles/webpack-stats.json
 
 cd /edx-sysadmin
 pip install -e .
