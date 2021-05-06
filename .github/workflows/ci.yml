@@ -40,22 +40,9 @@ jobs:
           git fetch mitodl
           git checkout mitodl/mitx/lilac
           cd ../devstack
-          sudo rm /var/lib/mongodb/mongod.lock
-          sudo systemctl daemon-reload
-          sudo systemctl start mongod
-        env:
-          LMS_CFG: 'lms/envs/bok_choy.yml'
-          STUDIO_CFG: 'cms/envs/bok_choy.yml'
-          NODE_ENV: 'development'
 
       - name: Run tests
         run: |
-          cd ..
-          pwd
-          ls
-          cd edx-platform 
-          ls test_root/staticfiles/
-          cat test_root/staticfiles/webpack-stats.json
           cd ../devstack
           DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
 
