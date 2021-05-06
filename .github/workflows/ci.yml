@@ -59,12 +59,9 @@ jobs:
           pwd
           ls
           cd edx-platform 
-          ls test_root/
           ls test_root/staticfiles/
-          ls test_root/staticfiles/lms
-          cat test_root/staticfiles/lms/webpack-stats.json
           cat test_root/staticfiles/webpack-stats.json
-          cd devstack
+          cd ../devstack
           DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
 
       - name: Upload coverage to CodeCov
