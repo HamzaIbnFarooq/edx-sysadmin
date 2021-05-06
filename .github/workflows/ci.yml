@@ -66,7 +66,7 @@ jobs:
           ls test_root/staticfiles/
           cat test_root/staticfiles/webpack-stats.json
           cd ../devstack
-          DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
+          DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-platform:/edx/app/edxapp/edx-platform $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
 
       - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@v1

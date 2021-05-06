@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 
-# source /edx/app/edxapp/venvs/edxapp/bin/activate
+source /edx/app/edxapp/venvs/edxapp/bin/activate
 
 cd /edx/app/edxapp/edx-platform
 mkdir -p reports
+
+pip install -r ./requirements/edx/testing.txt
 
 cd /edx-sysadmin
 pip install -e .
@@ -16,7 +18,6 @@ pip install codecov
 pip freeze
 
 mkdir -p test_root  # for edx
-cp /home/runner/work/edx-sysadmin/edx-platform/test_root/staticfiles/lms/webpack-stats.json /edx/app/edxapp/edx-platform/test_root/staticfiles/webpack-stats.json
 
 set +e
 
