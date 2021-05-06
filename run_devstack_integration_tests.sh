@@ -6,13 +6,9 @@ source /edx/app/edxapp/venvs/edxapp/bin/activate
 cd /edx/app/edxapp/edx-platform
 mkdir -p reports
 
-sudo apt-get install libxmlsec1-dev pkg-config nodejs
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-sudo apt-get update
-sudo apt-get install -y mongodb-org
+sudo rm /var/lib/mongodb/mongod.lock
 sudo systemctl daemon-reload
 sudo systemctl start mongod
-sudo systemctl status mongod   
 
 pip install -r ./requirements/edx/testing.txt
 pip install -r ./requirements/edx/paver.txt
