@@ -55,6 +55,7 @@ jobs:
 
       - name: Run tests
         run: |
+          pwd
           cat test_root/staticfiles/webpack-stats.json
           cd devstack
           DEVSTACK_WORKSPACE=$PWD/.. docker-compose -f docker-compose.yml -f docker-compose-host.yml run -v $PWD/../edx-sysadmin:/edx-sysadmin lms /edx-sysadmin/run_devstack_integration_tests.sh
