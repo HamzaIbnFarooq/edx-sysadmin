@@ -56,6 +56,7 @@ jobs:
       - name: Run tests
         run: |
           pwd
+          ls
           ls test_root/
           ls test_root/staticfiles/
           ls test_root/staticfiles/lms
