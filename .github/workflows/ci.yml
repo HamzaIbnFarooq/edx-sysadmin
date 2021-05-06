@@ -28,6 +28,10 @@ jobs:
           sudo systemctl start mongod
           sudo systemctl status mongod
 
+      - name: test setup
+        run: |
+          
+      
       - name: Setup edX
         run: |
           cd ..
@@ -55,6 +59,11 @@ jobs:
 
       - name: Run tests
         run: |
+          echo '-------------------===================-------------------'
+          ls /edx/app/edxapp/edx-platform
+          echo '---------------'
+          ls /edx/app/edxapp/edx-platform/test_root/staticfiles/
+          echo '-------------------===================-------------------'
           cd ..
           pwd
           ls
