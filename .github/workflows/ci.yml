@@ -17,16 +17,6 @@ jobs:
 
       - name: Run black formatter
         run: black --check .
-
-      - name: Install system requirements
-        run: |
-          sudo apt-get install libxmlsec1-dev pkg-config nodejs
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-org
-          sudo systemctl daemon-reload
-          sudo systemctl start mongod
-          sudo systemctl status mongod          
       
       - name: Setup edX
         run: |
@@ -39,7 +29,6 @@ jobs:
           git remote add mitodl https://github.com/mitodl/edx-platform.git
           git fetch mitodl
           git checkout mitodl/mitx/lilac
-          cd ../devstack
 
       - name: Run tests
         run: |
