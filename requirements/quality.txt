@@ -97,8 +97,6 @@ markupsafe==1.1.1
     #   jinja2
 mccabe==0.6.1
     # via pylint
-mongoengine==0.23.1
-    # via -r requirements/test.txt
 mypy-extensions==0.4.3
     # via black
 packaging==20.9
@@ -145,10 +143,6 @@ pylint==2.8.2
     #   pylint-celery
     #   pylint-django
     #   pylint-plugin-utils
-pymongo==3.11.4
-    # via
-    #   -r requirements/test.txt
-    #   mongoengine
 pyparsing==2.4.7
     # via
     #   -r requirements/test.txt

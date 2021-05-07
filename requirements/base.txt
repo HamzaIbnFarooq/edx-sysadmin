@@ -8,10 +8,6 @@ django==2.2.21
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/base.in
-mongoengine==0.23.0
-    # via -r requirements/base.in
-pymongo==3.10.1
-    # via mongoengine
 pytz==2021.1
     # via django
 sqlparse==0.4.1

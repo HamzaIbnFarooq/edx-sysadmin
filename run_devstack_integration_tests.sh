@@ -6,10 +6,6 @@ source /edx/app/edxapp/venvs/edxapp/bin/activate
 cd /edx/app/edxapp/edx-platform
 mkdir -p reports
 
-sudo rm /var/lib/mongodb/mongod.lock
-sudo systemctl daemon-reload
-sudo systemctl start mongod
-
 pip install -r ./requirements/edx/testing.txt
 pip install -r ./requirements/edx/paver.txt
 sudo npm install -g rtlcss

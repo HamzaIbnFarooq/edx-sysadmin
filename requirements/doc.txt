@@ -84,8 +84,6 @@ markupsafe==1.1.1
     # via
     #   -r requirements/test.txt
     #   jinja2
-mongoengine==0.23.1
-    # via -r requirements/test.txt
 packaging==20.9
     # via
     #   -r requirements/test.txt
@@ -112,10 +110,6 @@ pygments==2.9.0
     #   doc8
     #   readme-renderer
     #   sphinx
-pymongo==3.11.4
-    # via
-    #   -r requirements/test.txt
-    #   mongoengine
 pyparsing==2.4.7
     # via
     #   -r requirements/test.txt

@@ -146,8 +146,6 @@ mccabe==0.6.1
     # via
     #   -r requirements/quality.txt
     #   pylint
-mongoengine==0.23.1
-    # via -r requirements/quality.txt
 mypy-extensions==0.4.3
     # via
     #   -r requirements/quality.txt
@@ -225,10 +223,6 @@ pylint==2.8.2
     #   pylint-celery
     #   pylint-django
     #   pylint-plugin-utils
-pymongo==3.11.4
-    # via
-    #   -r requirements/quality.txt
-    #   mongoengine
 pyparsing==2.4.7
     # via
     #   -r requirements/ci.txt
