@@ -10,6 +10,7 @@ pip install -r ./requirements/edx/testing.txt
 pip install -r ./requirements/edx/paver.txt
 sudo npm install -g rtlcss
 paver update_assets lms --settings=test_static_optimized
+paver update_assets cms --settings=test_static_optimized
 echo '---------------------------pwd--------------------'
 pwd
 cp -r test_root/ /edx-sysadmin/test_root

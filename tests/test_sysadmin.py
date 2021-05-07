@@ -238,7 +238,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         self._mkdir(settings.GIT_REPO_DIR)
 
         self._add_edx4edx()
-        date = CourseGitLog.objects.all().first().created.replace(tzinfo=UTC)
+        date = CourseGitLog.objects.all.first().created.replace(tzinfo=UTC)
 
         for timezone in tz_names:
             with (
