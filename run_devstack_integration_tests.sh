@@ -15,6 +15,8 @@ pwd
 ls
 echo '-------------------------------------------------'
 cp test_root/staticfiles/lms/webpack-stats.json test_root/staticfiles/webpack-stats.json
+mkdir /edx-sysadmin/test_root
+mkdir /edx-sysadmin/test_root/staticfiles
 cp test_root/staticfiles/lms/webpack-stats.json /edx-sysadmin/test_root/staticfiles/webpack-stats.json
 echo '---------------------------pwd--------------------'
 ls /edx/app/edxapp/edx-platform/test_root/staticfiles/
