@@ -12,7 +12,10 @@ sudo npm install -g rtlcss
 paver update_assets lms --settings=test_static_optimized
 echo '---------------------------pwd--------------------'
 pwd
-ls
+cp -r test_root/ /edx-sysadmin/test_root
+ls test_root/
+echo '-------------------------------------------------'
+ls /edx-sysadmin/test_root
 echo '-------------------------------------------------'
 cp test_root/staticfiles/lms/webpack-stats.json test_root/staticfiles/webpack-stats.json
 mkdir -p /edx-sysadmin/test_root/staticfiles
