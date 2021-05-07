@@ -2,11 +2,9 @@
 Views for the Open edX SysAdmin Plugin
 """
 import logging
-
 from io import StringIO
-import mongoengine
+
 from django.contrib.auth.decorators import user_passes_test
-from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import render
@@ -26,7 +24,7 @@ from xmodule.modulestore.django import modulestore
 from edx_sysadmin.git_import import GitImportError
 from edx_sysadmin import git_import
 from edx_sysadmin.forms import UserRegistrationForm
-from edx_sysadmin.models import CourseImportLog
+from edx_sysadmin.models import CourseGitLog
 from edx_sysadmin.utils.markup import HTML, Text
 from edx_sysadmin.utils.utils import (
     create_user_account,
@@ -44,7 +42,12 @@ from edx_sysadmin.utils.utils import (
 log = logging.getLogger(__name__)
 
 
-@method_decorator(user_passes_test(user_has_access_to_sysadmin), name="dispatch")
+@method_decorator(
+    user_passes_test(
+        user_has_access_to_sysadmin, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
+)
 class SysadminDashboardRedirectionView(RedirectView):
     """Redirection view to land user to specific panel"""
 
@@ -64,7 +67,12 @@ class SysadminDashboardRedirectionView(RedirectView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-@method_decorator(user_passes_test(user_has_access_to_sysadmin), name="dispatch")
+@method_decorator(
+    user_passes_test(
+        user_has_access_to_sysadmin, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
+)
 @method_decorator(
     cache_control(no_cache=True, no_store=True, must_revalidate=True), name="dispatch"
 )
@@ -94,7 +102,12 @@ class SysadminDashboardBaseView(TemplateView):
         return context
 
 
-@method_decorator(user_passes_test(user_has_access_to_courses_panel), name="dispatch")
+@method_decorator(
+    user_passes_test(
+        user_has_access_to_courses_panel, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
+)
 class CoursesPanel(SysadminDashboardBaseView):
     """
     This manages deleting courses.
@@ -157,7 +170,12 @@ class CoursesPanel(SysadminDashboardBaseView):
         return render(request, self.template_name, context)
 
 
-@method_decorator(user_passes_test(user_has_access_to_users_panel), name="dispatch")
+@method_decorator(
+    user_passes_test(
+        user_has_access_to_users_panel, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
+)
 class UsersPanel(SysadminDashboardBaseView):
     """View to show the User Panel of SysAdmin."""
 
@@ -205,7 +223,10 @@ class UsersPanel(SysadminDashboardBaseView):
 
 
 @method_decorator(
-    user_passes_test(user_has_access_to_git_import_panel), name="dispatch"
+    user_passes_test(
+        user_has_access_to_git_import_panel, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
 )
 class GitImport(SysadminDashboardBaseView):
     """
@@ -315,7 +336,12 @@ class GitImport(SysadminDashboardBaseView):
         return render(request, self.template_name, context)
 
 
-@method_decorator(user_passes_test(user_has_access_to_git_logs_panel), name="dispatch")
+@method_decorator(
+    user_passes_test(
+        user_has_access_to_git_logs_panel, login_url="/404", redirect_field_name=None
+    ),
+    name="dispatch",
+)
 class GitLogs(SysadminDashboardBaseView):
     """
     This provides a view into the import of courses from git repositories.
@@ -340,52 +366,18 @@ class GitLogs(SysadminDashboardBaseView):
             course_id = CourseKey.from_string(course_id)
 
         page_size = 10
-
-        # Set mongodb defaults even if it isn't defined in settings
-        mongo_db = {
-            "host": "localhost",
-            "user": "",
-            "password": "",
-            "db": "xlog",
-        }
-
-        # Allow overrides
-        if hasattr(settings, "MONGODB_LOG"):
-            for config_item in [
-                "host",
-                "user",
-                "password",
-                "db",
-            ]:
-                mongo_db[config_item] = settings.MONGODB_LOG.get(
-                    config_item, mongo_db[config_item]
-                )
-
-        mongouri = "mongodb://{user}:{password}@{host}/{db}".format(**mongo_db)
-
         error_msg = ""
-
-        try:
-            if mongo_db["user"] and mongo_db["password"]:
-                mdb = mongoengine.connect(mongo_db["db"], host=mongouri)
-            else:
-                mdb = mongoengine.connect(mongo_db["db"], host=mongo_db["host"])
-        except mongoengine.connection.ConnectionError:  # pylint: disable=no-member
-            log.exception(
-                "Unable to connect to mongodb to save log, "
-                "please check MONGODB_LOG settings."
-            )
 
         if course_id is None:
             if not request.user.is_staff:
                 user_courses = request.user.courseaccessrole_set.filter(
                     role=CourseInstructorRole.ROLE
                 ).values_list("course_id", flat=True)
-                cilset = CourseImportLog.objects.filter(
+                cilset = CourseGitLog.objects.filter(
                     course_id__in=user_courses
                 ).order_by("-created")
             else:
-                cilset = CourseImportLog.objects.order_by("-created")
+                cilset = CourseGitLog.objects.order_by("-created")
         else:
             # Allow only course-admin and staff users
             if not (
@@ -394,7 +386,7 @@ class GitLogs(SysadminDashboardBaseView):
             ):
                 raise Http404
             log.debug("course_id=%s", course_id)
-            cilset = CourseImportLog.objects.filter(course_id=course_id).order_by(
+            cilset = CourseGitLog.objects.filter(course_id=course_id).order_by(
                 "-created"
             )
             log.debug("cilset length=%s", len(cilset))
@@ -411,7 +403,6 @@ class GitLogs(SysadminDashboardBaseView):
             page = min(max(1, given_page), paginator.num_pages)
             logs = paginator.page(page)
 
-        mdb.close()
         context = self.get_context_data(**kwargs)
         context.update(
             {
