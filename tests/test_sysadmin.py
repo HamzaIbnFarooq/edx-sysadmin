@@ -238,7 +238,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         self._mkdir(settings.GIT_REPO_DIR)
 
         self._add_edx4edx()
-        date = CourseGitLog.objects.first().created.replace(tzinfo=UTC)
+        date = CourseGitLog.objects.all().first().created.replace(tzinfo=UTC)
 
         for timezone in tz_names:
             with (
@@ -313,7 +313,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
             )
             self.assertContains(response, f"Page {expected} of 2")
 
-        CourseGitLog.objects.delete()
+        CourseGitLog.objects.all().delete()
 
     @pytest.mark.skip(reason="no way of currently testing this")
     def test_gitlog_courseteam_access(self):
