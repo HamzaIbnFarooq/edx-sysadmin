@@ -11,7 +11,6 @@ pip install -r ./requirements/edx/paver.txt
 sudo npm install -g rtlcss
 
 mkdir -p test_root  # for edx
-mkdir -p test_root/course_repos
 
 paver update_assets lms --settings=test_static_optimized
 
