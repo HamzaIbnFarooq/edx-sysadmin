@@ -353,7 +353,8 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
 
         response = self.client.get(
             reverse(
-                "sysadmin:gitlogs_detail", kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"}
+                "sysadmin:gitlogs_detail",
+                kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"},
             )
         )
         self.assertContains(response, "======&gt; IMPORTING course")
