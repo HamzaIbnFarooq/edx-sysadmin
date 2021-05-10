@@ -10,6 +10,9 @@ pip install -r ./requirements/edx/testing.txt
 pip install -r ./requirements/edx/paver.txt
 sudo npm install -g rtlcss
 
+mkdir -p test_root  # for edx
+mkdir -p test_root/course_repos
+
 paver update_assets lms --settings=test_static_optimized
 
 cp test_root/staticfiles/lms/webpack-stats.json test_root/staticfiles/webpack-stats.json
@@ -23,8 +26,6 @@ pip install codecov
 
 # output the packages which are installed for logging
 pip freeze
-
-mkdir -p test_root  # for edx
 
 set +e
 

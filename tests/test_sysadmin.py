@@ -109,7 +109,7 @@ class SysadminBaseTestCase(SharedModuleStoreTestCase):
 
 
 @override_settings(
-    GIT_REPO_DIR=settings.TEST_ROOT / f"course_repos_{uuid4().hex}",
+    GIT_REPO_DIR=settings.TEST_ROOT / f"course_repos",
 )
 class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
     """
@@ -144,16 +144,10 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
 
         # Create git loaded course
         response = self._add_edx4edx()
-        print("--------------------------------")
-        print("-----test_missing_repo_dir----------------------------------------")
-        print(response.__dict__)
-        print("-----test_missing_repo_dir----------------------------------------")
-        print("----------------------------------------------------------------")
         self.assertContains(
             response, Text(str(GitImportErrorNoDir(settings.GIT_REPO_DIR)))
         )
 
-    @pytest.mark.skip(reason="FIXME: Refactor needed for the test")
     def test_mongo_course_add_delete(self):
         """
         This is the same as TestSysadmin.test_xml_course_add_delete,
@@ -222,11 +216,6 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
                 kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"},
             )
         )
-        print("--------------------------------")
-        print("--------test_gitlogs----------")
-        print(response.__dict__)
-        print("--------test_gitlogs----------")
-        print("----------------------------------------------------------------")
 
         self.assertContains(response, "======&gt; IMPORTING course")
 
@@ -297,11 +286,6 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
                 kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"},
             )
         )
-        print("--------------------------------")
-        print("------------test_gitlog_no_logs------------")
-        print(response.__dict__)
-        print("------------test_gitlog_no_logs------------")
-        print("----------------------------------------------------------------")
 
         self.assertContains(
             response, "No git import logs have been recorded for this course."
@@ -346,7 +330,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         self.user.is_staff = False
         self.user.save()
         logged_in = self.client.login(username=self.user.username, password="foo")
-        response = self.client.get(reverse("gitlogs"))
+        response = self.client.get(reverse("sysadmin:gitlogs"))
         # Make sure our non privileged user doesn't have access to all logs
         assert response.status_code == 404
         # Or specific logs
@@ -369,7 +353,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
 
         response = self.client.get(
             reverse(
-                "gitlogs_detail", kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"}
+                "sysadmin:gitlogs_detail", kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"}
             )
         )
         self.assertContains(response, "======&gt; IMPORTING course")
