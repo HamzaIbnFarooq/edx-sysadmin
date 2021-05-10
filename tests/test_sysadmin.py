@@ -76,16 +76,19 @@ class SysadminBaseTestCase(SharedModuleStoreTestCase):
             course = def_ms.get_course(CourseLocator("MITx", "edx4edx", "edx4edx"))
 
         # Delete git loaded course
-        response = self.client.post(
-            reverse("sysadmin:courses"),
-            {
-                "course_id": str(course.id),
-                # "action": "del_course",
-            },
-        )
-        self.addCleanup(self._rm_glob, f"{course_path}_deleted_*")
+        if course:
+            response = self.client.post(
+                reverse("sysadmin:courses"),
+                {
+                    "course_id": str(course.id),
+                    # "action": "del_course",
+                },
+            )
+            self.addCleanup(self._rm_glob, f"{course_path}_deleted_*")
 
-        return response
+            return response
+        else:
+            return None
 
     def _rm_glob(self, path):
         """
@@ -141,6 +144,11 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
 
         # Create git loaded course
         response = self._add_edx4edx()
+        print('--------------------------------')
+        print('-----test_missing_repo_dir----------------------------------------')
+        print(response.__dict__)
+        print('-----test_missing_repo_dir----------------------------------------')
+        print('----------------------------------------------------------------')
         self.assertContains(
             response, Text(str(GitImportErrorNoDir(settings.GIT_REPO_DIR)))
         )
@@ -214,6 +222,11 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
                 kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"},
             )
         )
+        print('--------------------------------')
+        print('--------test_gitlogs----------')
+        print(response.__dict__)
+        print('--------test_gitlogs----------')
+        print('----------------------------------------------------------------')
 
         self.assertContains(response, "======&gt; IMPORTING course")
 
@@ -238,7 +251,7 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
         self._mkdir(settings.GIT_REPO_DIR)
 
         self._add_edx4edx()
-        date = CourseGitLog.objects.all.first().created.replace(tzinfo=UTC)
+        date = CourseGitLog.objects.all().first().created.replace(tzinfo=UTC)
 
         for timezone in tz_names:
             with (
@@ -284,6 +297,12 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
                 kwargs={"course_id": "course-v1:MITx+edx4edx+edx4edx"},
             )
         )
+        print('--------------------------------')
+        print('------------test_gitlog_no_logs------------')
+        print(response.__dict__)
+        print('------------test_gitlog_no_logs------------')
+        print('----------------------------------------------------------------')
+        
         self.assertContains(
             response, "No git import logs have been recorded for this course."
         )
@@ -315,7 +334,6 @@ class TestSysAdminMongoCourseImport(SysadminBaseTestCase):
 
         CourseGitLog.objects.all().delete()
 
-    @pytest.mark.skip(reason="no way of currently testing this")
     def test_gitlog_courseteam_access(self):
         """
         Ensure course team users are allowed to access only their own course.
